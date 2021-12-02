@@ -3,14 +3,14 @@ from bs4 import BeautifulSoup
 import os
 
 login_url = "https://sheet.host/account/login"
-user_url = "https://sheet.host/user/colsene/sheets"
+user_url = "https://sheet.host/user/scamper/sheets"
 
 username = user_url[24:-7]
 success_sheets = []
 failed_sheets = []
 
 payload = {
-    "login": "your-username",
+    "login": "your-email-username",
     "password": "your-password"
 }
 
@@ -39,7 +39,6 @@ with requests.session() as s:
         all_a = well_sheet_0.find("ul").find_all("a")
 
         for j, a in enumerate(all_a):
-            print()
             href = a["href"]
             r = requests.get(href)
 
@@ -55,21 +54,24 @@ with requests.session() as s:
             with open(f"{filename}", "wb") as f:
                 f.write(r.content)
 
-            print(f"{i}.{j} Success: filename")
+            print(f"{i}.{j} Success: {filename} link:{tr_a['href']}")
             success_sheets.append(filename)
 
 print()
-print("-" * 20)
-print(f"Total Failed: {len(failed_sheets)}")
-print(f"Total Success {len(success_sheets)}")
+print("Failed:")
+
 for i, failed in enumerate(failed_sheets):
-    print()
     print(f"{i}. Failed on: {failed[0]}\n"
           f"Download Link: {failed[1]}\n"
           f"Error: {failed[2]}")
 
 print()
-print(f"Success")
-print()
+print(f"Success:")
 for i, success in enumerate(success_sheets):
     print(f"{i}. {success}")
+
+print()
+print("-" * 20)
+print(f"Total Failed: {len(failed_sheets)}")
+print(f"Total Success {len(success_sheets)}")
+print("-" * 20)
