@@ -2,9 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 import os
 
-username = "gracelessghost"
-login = "your email username"
-password = "your password"
+username = "zzzanimeonpiano"
+login = "login email"
+password = "password"
 
 login_url = "https://sheet.host/account/login"
 user_url = f"https://sheet.host/user/{username}/sheets"
@@ -17,14 +17,18 @@ payload = {
     "password": f"{password}"
 }
 
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36"
+}
+
 if not os.path.exists(username):
     os.makedirs(username)
 
 os.chdir(username)
 
 with requests.session() as s:
-    s.post(login_url, payload)
-    r = s.get(user_url)
+    s.post(login_url, payload, headers=headers)
+    r = s.get(user_url, headers=headers)
 
     soup = BeautifulSoup(r.content, "html.parser")
     all_tr_a = soup.select('table[class="sh-table-score"] tbody tr td div a')
@@ -34,7 +38,7 @@ with requests.session() as s:
     for i, tr_a in enumerate(all_tr_a):
         href = tr_a["href"]
 
-        r = s.get(href)
+        r = s.get(href, headers=headers)
 
         soup = BeautifulSoup(r.content, "html.parser")
         well_sheet = soup.find_all(class_="well sheet-download")
@@ -49,7 +53,7 @@ with requests.session() as s:
 
         for j, a in enumerate(all_a):
             href = a["href"]
-            r = requests.get(href)
+            r = requests.get(href, headers=headers)
 
             try:
                 filename = r.headers["Content-Disposition"][22:-1]
