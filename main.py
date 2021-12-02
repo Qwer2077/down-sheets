@@ -2,16 +2,19 @@ import requests
 from bs4 import BeautifulSoup
 import os
 
-login_url = "https://sheet.host/account/login"
-user_url = "https://sheet.host/user/scamper/sheets"
+username = "gracelessghost"
+login = "your email username"
+password = "your password"
 
-username = user_url[24:-7]
+login_url = "https://sheet.host/account/login"
+user_url = f"https://sheet.host/user/{username}/sheets"
+
 success_sheets = []
 failed_sheets = []
 
 payload = {
-    "login": "your-email-username",
-    "password": "your-password"
+    "login": f"{login}",
+    "password": f"{password}"
 }
 
 if not os.path.exists(username):
@@ -35,7 +38,13 @@ with requests.session() as s:
 
         soup = BeautifulSoup(r.content, "html.parser")
         well_sheet = soup.find_all(class_="well sheet-download")
-        well_sheet_0 = well_sheet[0]
+        try:
+            well_sheet_0 = well_sheet[0]
+        except Exception as e:
+            print(f"{i}. Failed on: {href} Error: {e}")
+            failed_sheets.append([href, "No sheet music for this", e])
+            continue
+
         all_a = well_sheet_0.find("ul").find_all("a")
 
         for j, a in enumerate(all_a):
