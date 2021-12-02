@@ -1,4 +1,4 @@
-# down-sheets
+# download-sheets
 Download all sheets on sheet.host uploaded from a user
 
 known bug:
